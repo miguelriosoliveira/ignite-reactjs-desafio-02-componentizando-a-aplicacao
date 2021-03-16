@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
 import { MovieCard } from "./MovieCard";
 
 interface Movie {
@@ -9,15 +11,25 @@ interface Movie {
   }>;
   Runtime: string;
 }
+
+interface Genre {
+  id: number;
+  name: "action" | "comedy" | "documentary" | "drama" | "horror" | "family";
+  title: string;
+}
 interface ContentProps {
-  selectedGenre: {
-    title: string;
-  };
-  movies: Movie[];
+  selectedGenre: Genre;
 }
 
-export function Content({ selectedGenre, movies }: ContentProps) {
-  // Complete aqui
+export function Content({ selectedGenre }: ContentProps) {
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    api
+      .get<Movie[]>(`movies/?Genre_id=${selectedGenre.id}`)
+      .then((response) => setMovies(response.data));
+  }, [selectedGenre.id]);
+
   return (
     <div className="container">
       <header>
@@ -30,6 +42,7 @@ export function Content({ selectedGenre, movies }: ContentProps) {
         <div className="movies-list">
           {movies.map((movie) => (
             <MovieCard
+              key={movie.Title}
               title={movie.Title}
               poster={movie.Poster}
               runtime={movie.Runtime}

@@ -7,16 +7,15 @@ interface Genre {
 }
 interface SideBarProps {
   genres: Genre[];
-  handleClickButton: (genreId: number) => void;
   selectedGenreId: number;
+  onClickGenre: (genreId: number) => void;
 }
 
 export function SideBar({
   genres,
-  handleClickButton,
+  onClickGenre,
   selectedGenreId,
 }: SideBarProps) {
-  // Complete aqui
   return (
     <nav className="sidebar">
       <span>
@@ -26,10 +25,11 @@ export function SideBar({
       <div className="buttons-container">
         {genres.map((genre) => (
           <Button
+            key={genre.id}
             id={String(genre.id)}
             title={genre.title}
             iconName={genre.name}
-            onClick={() => handleClickButton(genre.id)}
+            onClick={() => onClickGenre(genre.id)}
             selected={selectedGenreId === genre.id}
           />
         ))}
